@@ -1,0 +1,25 @@
+---
+
+- name: create search home & index
+  file: path={{ musicbrainz_search_index_directory }} state=directory
+
+- name: copy the Index building code
+  command: creates={{ musicbrainz_search_home_directory }}/index-2.0.jar cp {{ musicbrainz_search_install_directory }}/search-server/index/target/index-2.0-SNAPSHOT-jar-with-dependencies.jar {{ musicbrainz_search_home_directory }}/index-2.0.jar
+
+# Download the latest freedb dump (in tar.bz2 format) from:
+# http://www.freedb.org/en/download__database.10.html
+- name: freedb dump
+  get_url: url={{ musicbrainz_search_freedb_url }} dest={{ musicbrainz_search_home_directory }}/freedb-dump.tar.bz2
+
+
+# build the search indexes
+# https://github.com/metabrainz/search-server#build-indexes
+# NOTE: this step will take several hours
+- name: build indexes
+  command: >
+    java -Xmx512M -jar index-2.0.jar --indexes-dir {{ musicbrainz_search_index_directory }} --freedb-dump {{ musicbrainz_search_home_directory }}/freedb-dump.tar.bz2 -u {{ musicbrainz_search_db_username }} -p {{ musicbrainz_search_db_password }} -d {{ musicbrainz_search_db_name }}
+    chdir={{ musicbrainz_search_home_directory }}
+
+- name: update index permissions
+  file: path={{ musicbrainz_search_index_directory }} owner=tomcat7 group=tomcat7
+

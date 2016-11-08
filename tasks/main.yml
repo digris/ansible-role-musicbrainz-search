@@ -1,0 +1,33 @@
+---
+
+
+- name: create log directory
+  file: path={{ musicbrainz_search_log_directory }} state=directory
+
+- name: create install directory
+  file: path={{ musicbrainz_search_install_directory }} state=directory
+
+- include: packages.yml
+  tags: packages
+  become: yes
+
+- include: install-server.yml
+  tags: search-server
+  become: yes
+
+- include: install-service.yml
+  tags: search-service
+  become: yes
+
+- include: install-updateindex.yml
+  tags: search-updateindex
+  become: yes
+
+- include: install-index.yml
+  tags: search-index
+  become: yes
+
+#- include: install-nginx.yml
+#  tags: nginx
+#  become: yes
+#  when: "{{ musicbrainz_include_nginx }}"

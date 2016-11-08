@@ -1,0 +1,15 @@
+---
+
+##
+# adding updateindex configuration
+- name: add updateindex config
+  template: src=files/updater/updateindex.cfg
+            dest={{ musicbrainz_search_install_directory }}/search-server/updater/updateindex.cfg
+
+##
+# updateindex is run 5 minutes later than the replication script. observe if enough, but usually the
+# mb-replication runs in less than one minute
+- name: install updateindex cron job
+  cron: name="run mb updateindex"
+        minute="55"
+        job="(. ~/.bashrc; {{ musicbrainz_search_install_directory }}/search-server/updater/updateindex.sh 2>&1 | /usr/bin/logger -t mb-updateindex)"

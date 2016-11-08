@@ -1,0 +1,14 @@
+---
+
+- name: Update apt cache
+  apt: update_cache=yes cache_valid_time=3600
+  tags: packages
+
+- name: ensure openjdk-7-jdk is installed
+  apt: pkg=openjdk-7-jdk state=present
+
+- name: ensure maven2 is installed
+  apt: pkg=maven2 state=present
+
+- name: ensure tomcat7 is installed
+  apt: pkg=tomcat7 state=present

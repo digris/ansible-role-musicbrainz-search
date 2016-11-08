@@ -1,0 +1,33 @@
+---
+
+musicbrainz_search_git_repository: https://github.com/metabrainz/search-server.git
+musicbrainz_search_git_version: master
+musicbrainz_search_schema_git_repository: https://github.com/metabrainz/mmd-schema.git
+musicbrainz_search_schema_git_version: master
+
+# hostname (likely an f.q.d.n)
+#
+musicbrainz_search_hostname: musicbrainz-mirror.local
+
+# database (same settings as on musicbrainz-mirror)
+musicbrainz_search_db_name: "musicbrainz_db"
+musicbrainz_search_db_username: "musicbrainz"
+musicbrainz_search_db_password: "musicbrainz"
+
+
+
+# directories
+musicbrainz_search_install_directory: /srv/musicbrainz-search
+musicbrainz_search_log_directory: /var/log/musicbrainz
+musicbrainz_search_home_directory: /data/search
+musicbrainz_search_index_directory: /data/search/indexdata
+
+
+musicbrainz_search_freedb_url: http://ftp.freedb.org/pub/freedb/freedb-complete-20161001.tar.bz2
+
+
+
+# install local nginx instance
+#  disable if you want to configure a reverse-proxy throgh an existing webserver
+#
+musicbrainz_search_include_nginx: yes

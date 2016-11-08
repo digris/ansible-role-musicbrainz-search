@@ -1,0 +1,50 @@
+---
+
+- name: chekout musicbrainz-search repository
+  git: repo={{ musicbrainz_search_git_repository }}
+       dest={{ musicbrainz_search_install_directory }}/search-server
+       version={{ musicbrainz_search_git_version }}
+       depth=1
+       accept_hostkey=yes
+       force=yes
+  register: musicbrainz_search_repository
+
+- name: chekout musicbrainz-schema repository
+  git: repo={{ musicbrainz_search_schema_git_repository }}
+       dest={{ musicbrainz_search_install_directory }}/mmd-schema
+       version={{ musicbrainz_search_schema_git_version }}
+       depth=1
+       accept_hostkey=yes
+       force=yes
+
+
+
+
+- name: add webapp config xml
+  template: src=files/WEB-INF/web.xml
+            dest={{ musicbrainz_search_install_directory }}/search-server/servlet/src/main/webapp/WEB-INF/web.xml
+
+
+
+- name: export JAVA_HOME to ~/.bashrc
+  lineinfile: dest=~/.bashrc line="export JAVA_HOME=/usr/lib/jvm/default-java"
+
+# cpanm task initially takes ~20 minutes
+- name: build & install schema model
+  command: >
+    mvn install
+    chdir={{ musicbrainz_search_install_directory }}/mmd-schema/brainz-mmd2-jaxb
+  environment:
+    JAVA_HOME: /usr/lib/jvm/default-java
+  #when: musicbrainz_search_repository.changed
+
+# cpanm task initially takes ~20 minutes
+- name: build search-server
+  command: >
+    mvn package
+    chdir={{ musicbrainz_search_install_directory }}/search-server
+  environment:
+    JAVA_HOME: /usr/lib/jvm/default-java
+  #when: musicbrainz_search_repository.changed
+
+
